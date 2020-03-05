@@ -19,10 +19,12 @@ public class BaseTest {
         driver.quit();
     }
 
-    @DataProvider(name = "browser")
+/*    @DataProvider(name = "browser")
     public static Object[] getBrowser() {
         String[][] objects;
-        objects = new String[][]{{"chrome"}, {"firefox"}};
+        objects = new String[][]{{"chrome"}};
         return objects;
     }
+
+ */
 }

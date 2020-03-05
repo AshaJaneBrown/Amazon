@@ -16,34 +16,29 @@ public class AmazonProductPage {
     public By rating = By.xpath("//span[@data-hook='rating-out-of-text']");
     public By isBestSeller = By.xpath("//i[@class='a-icon a-icon-addon p13n-best-seller-badge']");
 
-    Book book;
 
     public AmazonProductPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    public String getAuthor() {
-        return driver.findElement(author).getText();
+    public WebElement getAuthor() {
+        return driver.findElement(author);
     }
 
-    public String getName() {
-        return driver.findElement(name).getText();
+    public WebElement getName() {
+        return driver.findElement(name);
     }
 
-    public String getRating() {
-        return driver.findElement(rating).getText();
+    public WebElement getRating() {
+        return driver.findElement(rating);
     }
 
-    public String getPrice() {
-        return driver.findElement(price).getText();
+    public WebElement getPrice() {
+        return driver.findElement(price);
     }
 
-    public String defineBestSellers() {
-        String result;
-        if (driver.findElements(isBestSeller).size() != 0)
-            result = "Best seller";
-        else
-            result = "Not a best seller";
-        return result;
+    public boolean defineBestSellers() {
+        return (driver.findElements(isBestSeller).size() != 0);
+
     }
 }

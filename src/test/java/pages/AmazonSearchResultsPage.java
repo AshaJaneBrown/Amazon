@@ -9,7 +9,8 @@ import java.util.List;
 public class AmazonSearchResultsPage {
     WebDriver driver;
     By filter = By.id("n/3608");
-    By product = By.xpath("//img[@class='s-image']");
+    By product = By.xpath("//span[@class='a-size-medium a-color-base a-text-normal']");
+    public List<WebElement> foundBooks;
 
 
     public AmazonSearchResultsPage(WebDriver driver){
@@ -20,8 +21,8 @@ public class AmazonSearchResultsPage {
         driver.findElement(filter).click();
     }
 
-    public List<WebElement> identifyBooks(){
-        return driver.findElements(product);
+    public void identifyBooks(){
+        foundBooks =  driver.findElements(product);
     }
     public void openProductPage(WebElement element) {
         element.click();

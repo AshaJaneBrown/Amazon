@@ -1,46 +1,69 @@
 import org.openqa.selenium.*;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.AmazonProductPage;
 import pages.AmazonSearchResultsPage;
-
 import java.util.ArrayList;
-import java.util.List;
 
-public class BooksSearch extends BaseTest{
+
+public class BooksSearch extends BaseTest {
 
     ArrayList<Book> books = new ArrayList<Book>();
-    List<WebElement> bookElements;
     AmazonSearchResultsPage resultsPage;
     AmazonProductPage productPage;
 
 
-    @Test (dataProvider = "browser")
-    public void addJavaBooksToCollection(String browser) {
-        openAmazonPage(browser);
+    @Test
+    public void check() {
+        openAmazonPage("chrome");
         homePage.enterSearchRequest("Java");
         sleep(5);
 
         resultsPage = new AmazonSearchResultsPage(driver);
         resultsPage.applyBookFilter();
         sleep(5);
-        bookElements = resultsPage.identifyBooks();
+        resultsPage.identifyBooks();
         sleep(5);
 
         productPage = new AmazonProductPage(driver);
+        int numberOfBooks = resultsPage.foundBooks.size();
 
-        for (int i = 0; i < bookElements.size(); i++) {
-            resultsPage.openProductPage(bookElements.get(i));
+
+        for (int i = 0; i < numberOfBooks; i++) {
+            resultsPage.identifyBooks();
+            resultsPage.openProductPage(resultsPage.foundBooks.get(i));
             sleep(5);
-            books.add(new Book(productPage.getName(), productPage.getAuthor(), productPage.getPrice(), productPage.getRating(), productPage.defineBestSellers()));
+            addBook(productPage);
             sleep(5);
             driver.navigate().back();
             sleep(10);
         }
-
+        System.out.println(books.size());
+        searchBook();
     }
-    public void sleep(int milliseconds){
+
+    public void searchBook(){
+        ArrayList<String> bookTitles = new ArrayList<String>();
+        for (Book book : books) {
+            System.out.println(book.toString());
+            bookTitles.add(book.name.getText());
+        }
+        for (String title : bookTitles) {
+            Assert.assertTrue(bookTitles.contains("Head First Java"));
+        }
+    }
+
+    public void addBook(AmazonProductPage page) {
+        if (driver.findElements(page.name).size() > 0 &&
+            driver.findElements(page.author).size() > 0 &&
+            driver.findElements(page.rating).size() > 0 &&
+            driver.findElements(page.price).size() > 0)
+        books.add(new Book(page.getName(), page.getAuthor(), page.getPrice(), page.getRating(), page.defineBestSellers()));
+    }
+
+    public void sleep(int milliseconds) {
         try {
-            Thread.sleep(milliseconds*1000);
+            Thread.sleep(milliseconds * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
