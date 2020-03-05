@@ -1,68 +1,46 @@
-import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.testng.annotations.DataProvider;
+import org.openqa.selenium.*;
 import org.testng.annotations.Test;
+import pages.AmazonProductPage;
+import pages.AmazonSearchResultsPage;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class BooksSearch {
+public class BooksSearch extends BaseTest{
 
-    WebDriver driver;
+    ArrayList<Book> books = new ArrayList<Book>();
+    List<WebElement> bookElements;
+    AmazonSearchResultsPage resultsPage;
+    AmazonProductPage productPage;
 
-    @DataProvider(name = "browser")
-    public static Object[] getBrowser() {
-        String[][] objects;
-        objects = new String[][]{{"chrome"}};
-        return objects;
-    }
 
     @Test (dataProvider = "browser")
-    public void search(String browser) {
-        driver = DriverManager.getDriver(browser);
-        driver.get("https://www.amazon.com");
-        WebElement searchField = driver.findElement(By.id("twotabsearchtextbox"));
-        searchField.sendKeys("Java");
-        searchField.submit();
-        sleep();
+    public void addJavaBooksToCollection(String browser) {
+        openAmazonPage(browser);
+        homePage.enterSearchRequest("Java");
+        sleep(5);
 
-        WebElement booksSection = driver.findElement(By.id("n/3608"));
-//      WebElement booksSection = driver.findElement(By.id("n/283155")); - это правильный вариант, но он совсем не кликается :(
+        resultsPage = new AmazonSearchResultsPage(driver);
+        resultsPage.applyBookFilter();
+        sleep(5);
+        bookElements = resultsPage.identifyBooks();
+        sleep(5);
 
-        System.out.println(booksSection.getText());
-        booksSection.click();
-        sleep();
+        productPage = new AmazonProductPage(driver);
 
-        List<WebElement> bookItems = driver.findElements(By.xpath("//img[@class='s-image']"));
-        System.out.println(bookItems.size());
+        for (int i = 0; i < bookElements.size(); i++) {
+            resultsPage.openProductPage(bookElements.get(i));
+            sleep(5);
+            books.add(new Book(productPage.getName(), productPage.getAuthor(), productPage.getPrice(), productPage.getRating(), productPage.defineBestSellers()));
+            sleep(5);
+            driver.navigate().back();
+            sleep(10);
+        }
 
-        Book book = createBook(bookItems.get(0));
-
-//        driver.navigate().back(); - пытаюсь вернуться на страницу со списком книг, но всегда возникает StaleElementReferenceException
-
-
-        System.out.println(book.author.getText() + ", " + book.name.getText() + ", " + book.price.getText() + ", " + book.rating.getText());
     }
-
-    public Book createBook(WebElement element) {
-        Book book = new Book();
-        book.item = element;
-        book.item.click();
-        book.author = driver.findElement(By.xpath("//a[@class='a-link-normal contributorNameID']"));
-        book.name = driver.findElement(By.id("productTitle"));
-        book.price = driver.findElement(By.xpath("//span[@class='a-size-medium a-color-price header-price']"));
-        book.rating = driver.findElement(By.xpath("//span[@data-hook='rating-out-of-text']"));
-        if (driver.findElements( By.xpath("//i[@class='a-icon a-icon-addon p13n-best-seller-badge']") ).size() != 0)
-            book.isBestSeller = true;
-        else
-            book.isBestSeller = false;
-
-        return book;
-    }
-
-    public void sleep(){
+    public void sleep(int milliseconds){
         try {
-            Thread.sleep(10000);
+            Thread.sleep(milliseconds*1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
