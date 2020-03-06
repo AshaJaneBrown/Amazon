@@ -1,5 +1,3 @@
-import org.openqa.selenium.WebElement;
-
 public class Book {
 
     public String name;
@@ -17,10 +15,8 @@ public class Book {
 
     }
 
-
         public String toString() {
-        return (name + ", " + author + ", " + price + ", " + rating + ", ");
-
+        return (name + ", " + author + ", " + price + ", " + rating);
         }
     }
 

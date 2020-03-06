@@ -1,5 +1,6 @@
 import org.openqa.selenium.WebDriver;
-import org.testng.annotations.DataProvider;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import pages.AmazonHomePage;
 
 public class BaseTest {
@@ -7,6 +8,7 @@ public class BaseTest {
     WebDriver driver;
     AmazonHomePage homePage;
     public static String address = "https://www.amazon.com/";
+    String browser;
 
     public void openAmazonPage(String browser) {
         driver = DriverManager.getDriver(browser);
@@ -14,17 +16,16 @@ public class BaseTest {
         driver.get(address);
     }
 
-    public void closeBrowser() {
+    @BeforeClass
+    public void start(){
+    browser = System.getProperty("browserString");
+        openAmazonPage(browser);
+    }
 
+    @AfterClass
+    public void closeBrowser() {
         driver.quit();
     }
-
-/*    @DataProvider(name = "browser")
-    public static Object[] getBrowser() {
-        String[][] objects;
-        objects = new String[][]{{"chrome"}};
-        return objects;
-    }
-
- */
 }
+
+

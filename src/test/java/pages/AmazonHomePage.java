@@ -18,6 +18,5 @@ public class AmazonHomePage {
 
     public boolean atPage(String pageTitle){
         return driver.getTitle().equals(pageTitle);
-
     }
 }
