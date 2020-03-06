@@ -12,7 +12,6 @@ public class BooksSearch extends BaseTest {
     AmazonSearchResultsPage resultsPage;
     AmazonProductPage productPage;
 
-
     @Test
     public void check() {
         openAmazonPage("chrome");
@@ -28,7 +27,6 @@ public class BooksSearch extends BaseTest {
         productPage = new AmazonProductPage(driver);
         int numberOfBooks = resultsPage.foundBooks.size();
 
-
         for (int i = 0; i < numberOfBooks; i++) {
             resultsPage.identifyBooks();
             resultsPage.openProductPage(resultsPage.foundBooks.get(i));
@@ -39,26 +37,33 @@ public class BooksSearch extends BaseTest {
             sleep(10);
         }
         System.out.println(books.size());
-        searchBook();
+        searchBook(books);
     }
 
-    public void searchBook(){
+    public void searchBook(ArrayList<Book> books){
         ArrayList<String> bookTitles = new ArrayList<String>();
-        for (Book book : books) {
-            System.out.println(book.toString());
-            bookTitles.add(book.name.getText());
+        System.out.println(books.size());
+
+        for (int i = 0; i < books.size(); i++)
+        {
+            System.out.println(books.get(i).toString());
+            bookTitles.add(books.get(i).name);
         }
-        for (String title : bookTitles) {
-            Assert.assertTrue(bookTitles.contains("Head First Java"));
+
+        for (int i = 0; i < bookTitles.size(); i++)
+        {
+            System.out.println(bookTitles.get(i));
         }
-    }
+
+        Assert.assertTrue(bookTitles.contains("Head First Java, 2nd Edition"));
+        }
 
     public void addBook(AmazonProductPage page) {
         if (driver.findElements(page.name).size() > 0 &&
             driver.findElements(page.author).size() > 0 &&
             driver.findElements(page.rating).size() > 0 &&
             driver.findElements(page.price).size() > 0)
-        books.add(new Book(page.getName(), page.getAuthor(), page.getPrice(), page.getRating(), page.defineBestSellers()));
+        books.add(new Book(page.getName().getText(), page.getAuthor().getText(), page.getPrice().getText(), page.getRating().getText(), page.defineBestSellers()));
     }
 
     public void sleep(int milliseconds) {

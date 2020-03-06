@@ -2,13 +2,13 @@ import org.openqa.selenium.WebElement;
 
 public class Book {
 
-    public WebElement name;
-    public WebElement author;
-    public WebElement price;
-    public WebElement rating;
+    public String name;
+    public String author;
+    public String price;
+    public String rating;
     public boolean isBestSeller;
 
-    public Book(WebElement name, WebElement author, WebElement price, WebElement rating, boolean isBestSeller) {
+    public Book(String name, String author, String price, String rating, boolean isBestSeller) {
         this.name = name;
         this.author = author;
         this.price = price;
@@ -16,8 +16,10 @@ public class Book {
         this.isBestSeller = isBestSeller;
 
     }
+
+
         public String toString() {
-        return (name.getText() + ", " + author.getText() + ", " + price.getText() + ", " + rating.getText() + ", ");
+        return (name + ", " + author + ", " + price + ", " + rating + ", ");
 
         }
     }
